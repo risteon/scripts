@@ -82,10 +82,9 @@ def rewrite_nitrogen_configuration(nitrogen_config_file, conf):
             else:
                 continue
 
+            # separate filename from rest of path
             pos = lines[l_index].rfind('/')
             if pos == -1:
-                return None
-            if lines[l_index][5:pos] != conf['wallpaper_path']:
                 return None
 
             current = lines[l_index][pos+1:-1]
@@ -122,6 +121,7 @@ def rewrite_nitrogen_configuration(nitrogen_config_file, conf):
         with open(nitrogen_config_file, 'w') as output:
             output.writelines(lines)
 
+        # return False if a wallpaper could not be found
         return not wallpaper_not_found
 
     except IOError:
@@ -164,7 +164,7 @@ def main():
 
     # write next wallpaper to nitrogen configuration
     ret = rewrite_nitrogen_configuration(path.join(config_path, NITROGEN_CONFIG_FILE), configuration)
-    # Only if ret is False
+    # Only if ret is False: rewrite configuration omitting removed wallpapers
     if ret is not None and not ret:
         configuration_changed = True
 
